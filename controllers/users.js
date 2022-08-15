@@ -17,6 +17,7 @@ const getUser = (req, res) => {
   User.findById(req.params.id).then((user) => res.send({ data: user }))
     .catch((e) => {
       if (e.name === 'CastError') { return res.status(UNFOUND_CODE).send({ message: 'Запрашиваемый пользователь не найден' }); }
+      if (e.name === 'AssertionError') { return res.status(ERROR_CODE).send({ message: 'Запрашиваемый пользователь не найден' }); }
       res.status(SERVER_ERROR_CODE).send({ message: 'Ошибка на сервере' });
     });
 };

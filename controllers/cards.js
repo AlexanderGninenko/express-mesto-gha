@@ -25,12 +25,18 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.deleteOne({ _id: req.params.id }).then((card) => res.send({ data: card }))
+  Card.deleteOne({ _id: req.params.id })
     .orFail(() => {
       throw new Error('NotFound');
     })
+    .then((card) => res.send({ data: card }))
     .catch((e) => {
-      if (e.message === 'NotFound') { return res.status(UNFOUND_CODE).send({ message: 'Запрашиваемая карточка не найдена' }); }
+      if (e.message === 'NotFound') {
+        return res.status(UNFOUND_CODE).send({ message: 'Запрашиваемая карточка не найдена' });
+      }
+      if (e.name === 'CastError') {
+        return res.status(ERROR_CODE).send({ message: 'Введен некорректный идентификатор карточки' });
+      }
       res.status(SERVER_ERROR_CODE).send({ message: 'Ошибка на сервере' });
     });
 };

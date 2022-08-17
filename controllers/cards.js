@@ -17,7 +17,7 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: { name: card.name, link: card.link } }))
+    .then((card) => res.send({ name: card.name, link: card.link, _id: card._id }))
     .catch((e) => {
       if (e.name === 'ValidationError') { return res.status(ERROR_CODE).send({ message: 'Переданы неверные данные' }); }
       res.status(SERVER_ERROR_CODE).send({ message: 'Ошибка на сервере' });

@@ -1,8 +1,13 @@
 /* eslint-disable no-console */
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const NotFoundError = require('./errors/NotFoundError');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const { loginValidation, registerUserValidation } = require('./middlewares/validate');
 
 const { PORT = 3000 } = process.env;
 
@@ -11,20 +16,28 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '62f63f1ba4a0d2c64d5f3cea', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-
-  next();
+app.use('/users', auth, userRouter);
+app.use('/cards', auth, cardRouter);
+app.post('/signin', loginValidation, login);
+app.post('/signup', registerUserValidation, createUser);
+app.use(() => {
+  throw new NotFoundError('Такой страницы не существует');
 });
 
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
-app.use((req, res) => {
-  res.status(404).send({ message: 'Такой страницы не существует' });
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+  next();
 });
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

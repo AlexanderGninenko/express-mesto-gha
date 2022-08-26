@@ -56,11 +56,13 @@ const createUser = (req, res, next) => {
   bcrypt.hash(password, 7).then((hash) => {
     User.create({
       name, about, avatar, email, password: hash,
-    }).then((user) => res.send({ data: user }))
+    }).then((user) => res.send({
+      name: name.username,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }))
       .catch((e) => {
-        // if (e.name === 'ValidationError') {
-        //   next(new BadRequestError('Переданы неверные данные'));
-        // } else
         if (e.code === 11000) {
           next(new ConflictError('Такой пользователь уже существует'));
         }

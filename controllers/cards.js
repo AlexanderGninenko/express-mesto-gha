@@ -23,18 +23,15 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  if (req.user._id !== req.params.id) {
-    throw new ForbiddenError('Запрещено');
-  }
-  Card.deleteOne({ _id: req.params.id })
+  Card.findById({ _id: req.params.id })
     .orFail(() => {
       throw new NotFoundError('NotFound');
     })
-    .then((card) => res.send({ data: card }))
-    .catch((e) => {
-      if (e.name === 'CastError') {
-        next(new BadRequestError('Введен некорректный идентификатор карточки'));
-      }
+    .then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        Card.findByIdAndRemove(req.params.id)
+          .then((data) => res.send(data));
+      } else throw new ForbiddenError('Запрещено');
     })
     .catch(next);
 };
@@ -64,11 +61,6 @@ const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
     throw new NotFoundError('NotFound');
   })
   .then((card) => res.send({ data: card }))
-  .catch((e) => {
-    if (e.name === 'CastError') {
-      next(new BadRequestError('Введен некорректный идентификатор карточки'));
-    }
-  })
   .catch(next);
 
 module.exports = {

@@ -1,9 +1,7 @@
-const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 
@@ -48,33 +46,26 @@ const getMyUser = (req, res, next) => {
       throw new NotFoundError('NotFound');
     })
     .then((user) => res.send({ data: user }))
-    .catch((e) => {
-      if (e.name === 'CastError') {
-        next(new BadRequestError('Введен некорректный идентификатор пользователя'));
-      }
-      next(e);
-    });
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  // if (!validator.isEmail(email)) {
-  //   throw new UnauthorizedError('Wrong email');
-  // }
   bcrypt.hash(password, 7).then((hash) => {
     User.create({
       name, about, avatar, email, password: hash,
     }).then((user) => res.send({ data: user }))
       .catch((e) => {
-        if (e.name === 'ValidationError') {
-          next(new BadRequestError('Переданы неверные данные'));
-        } else if (e.code === 11000) {
+        // if (e.name === 'ValidationError') {
+        //   next(new BadRequestError('Переданы неверные данные'));
+        // } else
+        if (e.code === 11000) {
           next(new ConflictError('Такой пользователь уже существует'));
         }
-        next(e);
-      });
+      })
+      .catch(next);
   });
 };
 
@@ -87,8 +78,8 @@ const updateProfile = (req, res, next) => {
       if (e.name === 'ValidationError') {
         next(new BadRequestError('Переданы неверные данные'));
       }
-      next(e);
-    });
+    })
+    .catch(next);
 };
 
 const updateAvatar = (req, res, next) => {
@@ -100,8 +91,8 @@ const updateAvatar = (req, res, next) => {
       if (e.name === 'ValidationError') {
         next(new BadRequestError('Переданы неверные данные'));
       }
-      next(e);
-    });
+    })
+    .catch(next);
 };
 
 module.exports = {

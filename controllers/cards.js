@@ -45,11 +45,6 @@ const likeCard = (req, res, next) => Card.findByIdAndUpdate(
     throw new NotFoundError('NotFound');
   })
   .then((card) => res.send({ data: card }))
-  .catch((e) => {
-    if (e.name === 'CastError') {
-      next(new BadRequestError('Введен некорректный идентификатор карточки'));
-    }
-  })
   .catch(next);
 
 const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(

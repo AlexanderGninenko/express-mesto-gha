@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const NotFoundError = require('./errors/NotFoundError');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
@@ -26,6 +27,8 @@ app.post('/signup', registerUserValidation, createUser);
 app.use(() => {
   throw new NotFoundError('Такой страницы не существует');
 });
+
+app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;

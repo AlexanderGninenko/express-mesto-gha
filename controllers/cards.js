@@ -18,8 +18,8 @@ const createCard = (req, res, next) => {
       if (e.name === 'ValidationError') {
         next(new BadRequestError('Переданы неверные данные'));
       }
-      next(e);
-    });
+    })
+    .catch(next);
 };
 
 const deleteCard = (req, res, next) => {
@@ -35,8 +35,8 @@ const deleteCard = (req, res, next) => {
       if (e.name === 'CastError') {
         next(new BadRequestError('Введен некорректный идентификатор карточки'));
       }
-      next(e);
-    });
+    })
+    .catch(next);
 };
 
 const likeCard = (req, res, next) => Card.findByIdAndUpdate(
@@ -52,8 +52,8 @@ const likeCard = (req, res, next) => Card.findByIdAndUpdate(
     if (e.name === 'CastError') {
       next(new BadRequestError('Введен некорректный идентификатор карточки'));
     }
-    next(e);
-  });
+  })
+  .catch(next);
 
 const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
   req.params.id,
@@ -68,8 +68,8 @@ const dislikeCard = (req, res, next) => Card.findByIdAndUpdate(
     if (e.name === 'CastError') {
       next(new BadRequestError('Введен некорректный идентификатор карточки'));
     }
-    next(e);
-  });
+  })
+  .catch(next);
 
 module.exports = {
   getCards,

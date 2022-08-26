@@ -58,7 +58,7 @@ const createUser = (req, res, next) => {
     }))
       .catch((e) => {
         if (e.code === 11000) {
-          next(new ConflictError('Такой пользователь уже существует'));
+          throw new ConflictError('Такой пользователь уже существует');
         }
       })
       .catch(next);

@@ -76,11 +76,6 @@ const updateProfile = (req, res, next) => {
   const { _id } = req.user;
   User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
-    .catch((e) => {
-      if (e.name === 'ValidationError') {
-        next(new BadRequestError('Переданы неверные данные'));
-      }
-    })
     .catch(next);
 };
 

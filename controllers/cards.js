@@ -17,9 +17,8 @@ const createCard = (req, res, next) => {
     .catch((e) => {
       if (e.name === 'ValidationError') {
         throw new BadRequestError('Переданы неверные данные');
-      }
-    })
-    .catch(next);
+      } else next(e);
+    });
 };
 
 const deleteCard = (req, res, next) => {
@@ -29,9 +28,9 @@ const deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
-        Card.findByIdAndRemove(req.params.id)
+        return Card.findByIdAndRemove(req.params.id)
           .then((data) => res.send(data));
-      } else throw new ForbiddenError('Запрещено');
+      } throw new ForbiddenError('Запрещено');
     })
     .catch(next);
 };

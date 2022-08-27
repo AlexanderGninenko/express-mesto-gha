@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
+const BadRequestError = require('../errors/BadRequestError');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -15,7 +16,7 @@ const login = (req, res, next) => {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
         })
-        .send({ token, user });
+        .send({ token });
     })
     .catch(next);
 };
@@ -37,7 +38,7 @@ const getUser = (req, res, next) => {
 const getMyUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => {
-      throw new NotFoundError('NotFound');
+      throw new NotFoundError('Пользователь с таким id не найден');
     })
     .then((user) => res.send({ data: user }))
     .catch(next);
@@ -59,9 +60,10 @@ const createUser = (req, res, next) => {
       .catch((e) => {
         if (e.code === 11000) {
           throw new ConflictError('Такой пользователь уже существует');
-        }
-      })
-      .catch(next);
+        } else if (e.name === 'ValidationError') {
+          throw new BadRequestError('Переданы неверные данные');
+        } else next(e);
+      });
   });
 };
 
@@ -70,7 +72,11 @@ const updateProfile = (req, res, next) => {
   const { _id } = req.user;
   User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
-    .catch(next);
+    .catch((e) => {
+      if (e.name === 'ValidationError') {
+        throw new BadRequestError('Переданы неверные данные');
+      } else next(e);
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -78,7 +84,11 @@ const updateAvatar = (req, res, next) => {
   const { _id } = req.user;
   User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
-    .catch(next);
+    .catch((e) => {
+      if (e.name === 'ValidationError') {
+        throw new BadRequestError('Переданы неверные данные');
+      } else next(e);
+    });
 };
 
 module.exports = {

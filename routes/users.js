@@ -7,7 +7,7 @@ const { userProfileValidation, avatarValidation, idValidation } = require('../mi
 const router = express.Router();
 
 router.get('/', getAllUsers);
-router.get('/me', idValidation, getMyUser);
+router.get('/me', getMyUser);
 router.get('/:id', idValidation, getUser);
 
 router.patch('/me', userProfileValidation, updateProfile);

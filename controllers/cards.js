@@ -16,7 +16,7 @@ const createCard = (req, res, next) => {
     .then((card) => res.send({ name: card.name, link: card.link, _id: card._id }))
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        throw new BadRequestError('Переданы неверные данные');
+        next(new BadRequestError('Переданы неверные данные'));
       } else next(e);
     });
 };

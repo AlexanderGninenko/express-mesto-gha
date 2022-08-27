@@ -59,9 +59,9 @@ const createUser = (req, res, next) => {
     }))
       .catch((e) => {
         if (e.code === 11000) {
-          throw new ConflictError('Такой пользователь уже существует');
+          next(new ConflictError('Такой пользователь уже существует'));
         } else if (e.name === 'ValidationError') {
-          throw new BadRequestError('Переданы неверные данные');
+          next(new BadRequestError('Переданы неверные данные'));
         } else next(e);
       });
   });
@@ -74,7 +74,7 @@ const updateProfile = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        throw new BadRequestError('Переданы неверные данные');
+        next(new BadRequestError('Переданы неверные данные'));
       } else next(e);
     });
 };
@@ -86,7 +86,7 @@ const updateAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        throw new BadRequestError('Переданы неверные данные');
+        next(new BadRequestError('Переданы неверные данные'));
       } else next(e);
     });
 };

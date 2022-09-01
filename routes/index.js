@@ -11,6 +11,13 @@ router.use(express.json());
 
 router.use('/users', auth, userRouter);
 router.use('/cards', auth, cardRouter);
+
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 router.post('/signin', loginValidation, login);
 router.post('/signup', registerUserValidation, createUser);
 router.get('/signout', (req, res) => {

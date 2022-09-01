@@ -1,8 +1,7 @@
 const options = {
   origin: [
-    'http://localhost:3000',
-    'https://ВАШ ДОМЕЙН С ДОКУМЕНТА',
-    'https://YOUR.github.io',
+    'https://alexandergninenko.nomoredomains.sbs',
+    'https://api.alexandergninenko.nomoredomains.sbs',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,

@@ -18,7 +18,20 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 const app = express();
 
-app.use('*', cors(corsOptions));
+const options = {
+  origin: [
+    'https://alexandergninenko.nomoredomains.sbs',
+    'https://api.alexandergninenko.nomoredomains.sbs',
+    'http://localhost:3000',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
+
+app.use('*', cors(options));
 
 app.use(cookieParser());
 app.use(express.json());

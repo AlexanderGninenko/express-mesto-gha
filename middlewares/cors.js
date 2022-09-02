@@ -2,6 +2,7 @@ const options = {
   origin: [
     'https://alexandergninenko.nomoredomains.sbs',
     'https://api.alexandergninenko.nomoredomains.sbs',
+    'http://localhost:3000',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,

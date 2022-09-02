@@ -32,7 +32,7 @@ const options = {
   credentials: true,
 };
 
-app.use('*', cors(options));
+app.use('*', cors());
 
 app.use(cookieParser());
 app.use(express.json());

@@ -23,6 +23,7 @@ const options = {
     'https://alexandergninenko.nomoredomains.sbs',
     'https://api.alexandergninenko.nomoredomains.sbs',
     'http://localhost:3000',
+    'http://localhost:5000',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,

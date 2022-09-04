@@ -10,7 +10,7 @@ const routes = require('./routes');
 const errorUniHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 5000 } = process.env;
+const { PORT = 3010 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -23,7 +23,7 @@ const options = {
     'https://alexandergninenko.nomoredomains.sbs',
     'https://api.alexandergninenko.nomoredomains.sbs',
     'http://localhost:3000',
-    'http://localhost:5000',
+    'http://localhost:3010',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
@@ -32,7 +32,7 @@ const options = {
   credentials: true,
 };
 
-app.use(cors());
+app.use('*', cors(options));
 
 app.use(cookieParser());
 app.use(express.json());

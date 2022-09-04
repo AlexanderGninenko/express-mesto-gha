@@ -9,8 +9,8 @@ const NotFoundError = require('../errors/NotFoundError');
 const router = express.Router();
 router.use(express.json());
 
-router.use('/users', auth, userRouter);
 router.use('/cards', auth, cardRouter);
+router.use('/users', auth, userRouter);
 
 router.get('/crash-test', () => {
   setTimeout(() => {
